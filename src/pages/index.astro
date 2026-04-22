@@ -1,0 +1,83 @@
+---
+import { getUsers } from "../lib/content";
+import PortfolioLayout from "../layouts/PortfolioLayout.astro";
+import UserCard from "../components/UserCard.astro";
+
+const users = await getUsers();
+---
+
+<PortfolioLayout title="The Open Page">
+  <main>
+    <header class="page-header">
+      <div class="header-inner">
+        <h1>The Open Page</h1>
+        <p>Explore profiles and blogs of our talented team members.</p>
+      </div>
+    </header>
+    <section class="grid-section">
+      <div class="users-grid">
+        {users.map((user) => (
+          <UserCard
+            id={user.id}
+            name={user.name}
+            title={user.title}
+            avatar={user.avatar}
+            location={user.location}
+          />
+        ))}
+      </div>
+    </section>
+  </main>
+</PortfolioLayout>
+
+<style>
+  main {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 1.5rem 4rem;
+  }
+
+  .page-header {
+    padding: 6rem 0 3rem;
+    border-bottom: 1px solid var(--color-border);
+    margin-bottom: 3.5rem;
+  }
+
+  .header-inner {
+    max-width: 600px;
+  }
+
+  h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--color-text);
+    margin-bottom: 1rem;
+    letter-spacing: -0.02em;
+    font-family: var(--font-serif);
+  }
+
+  p {
+    font-size: 1.25rem;
+    color: var(--color-text-muted);
+    font-family: var(--font-serif);
+    line-height: 1.4;
+  }
+
+  .users-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.5rem;
+  }
+
+  @media (max-width: 640px) {
+    .page-header {
+      padding: 4rem 0 2rem;
+      text-align: center;
+    }
+    .header-inner {
+      margin: 0 auto;
+    }
+    h1 { font-size: 2.25rem; }
+    p { font-size: 1.125rem; }
+  }
+</style>

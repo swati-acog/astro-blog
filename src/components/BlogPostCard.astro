@@ -1,0 +1,189 @@
+---
+interface Author {
+  name: string;
+  avatar: string;
+}
+
+interface Props {
+  title: string;
+  date: Date;
+  description?: string;
+  tags?: string[];
+  href: string;
+  authors?: Author[];
+}
+
+const { title, date, description, tags = [], href, authors = [] } = Astro.props;
+
+const formatted = date.toLocaleDateString("en-US", {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+});
+
+// Build display name: "Alice", "Alice & Bob", "Alice, Bob & 1 more"
+function authorLabel(authors: Author[]): string {
+  if (authors.length === 0) return "";
+  if (authors.length === 1) return authors[0].name;
+  if (authors.length === 2) return `${authors[0].name} & ${authors[1].name}`;
+  return `${authors[0].name}, ${authors[1].name} & ${authors.length - 2} more`;
+}
+const label = authorLabel(authors);
+---
+
+<a class="blog-card" href={href}>
+  <div class="blog-card-inner">
+    <div class="blog-meta">
+      {authors.length > 0 && (
+        <div class="author-info">
+          <div class="avatar-stack">
+            {authors.slice(0, 3).map((a, i) => (
+              <img
+                src={a.avatar}
+                alt={a.name}
+                width={22}
+                height={22}
+                class="author-avatar"
+                style={`z-index: ${3 - i}; margin-left: ${i === 0 ? '0' : '-6px'}`}
+              />
+            ))}
+          </div>
+          <span class="author-name">{label}</span>
+          <span class="meta-dot">•</span>
+        </div>
+      )}
+      <time class="blog-date" datetime={date.toISOString()}>
+        {formatted}
+      </time>
+      {tags.length > 0 && (
+        <div class="blog-tags">
+          <span class="meta-dot">•</span>
+          {tags.slice(0, 3).map((tag) => (
+            <span class="blog-tag">#{tag}</span>
+          ))}
+        </div>
+      )}
+    </div>
+
+    <h3 class="blog-title">{title}</h3>
+    {description && <p class="blog-desc">{description}</p>}
+  </div>
+  <div class="blog-arrow" aria-hidden="true">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="18" height="18">
+      <path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z" clip-rule="evenodd"/>
+    </svg>
+  </div>
+</a>
+
+<style>
+  .blog-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding: 1.5rem 0;
+    border-bottom: 1px solid var(--color-border);
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.2s;
+  }
+
+  .blog-card:last-child {
+    border-bottom: none;
+  }
+
+  .blog-card:hover .blog-title {
+    color: var(--color-accent);
+  }
+
+  .blog-card:hover .blog-arrow {
+    transform: translateX(4px);
+    color: var(--color-accent);
+  }
+
+  .blog-card-inner {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .blog-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .author-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .avatar-stack {
+    display: flex;
+    align-items: center;
+  }
+
+  .author-avatar {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1.5px solid var(--color-bg);
+    position: relative;
+  }
+
+  .author-name {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--color-text);
+  }
+
+  .meta-dot {
+    color: var(--color-text-subtle);
+    font-size: 0.75rem;
+  }
+
+  .blog-date {
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
+    font-family: var(--font-sans);
+  }
+
+  .blog-tags {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .blog-tag {
+    font-size: 0.75rem;
+    color: var(--color-text-subtle);
+    font-family: var(--font-sans);
+  }
+
+  .blog-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--color-text);
+    margin-bottom: 0.4rem;
+    font-family: var(--font-serif);
+    line-height: 1.3;
+  }
+
+  .blog-desc {
+    font-size: 0.9375rem;
+    color: var(--color-text-muted);
+    line-height: 1.5;
+    font-family: var(--font-serif);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .blog-arrow {
+    flex-shrink: 0;
+    color: var(--color-text-subtle);
+    transition: transform 0.2s, color 0.2s;
+  }
+</style>

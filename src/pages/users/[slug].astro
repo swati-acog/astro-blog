@@ -1,0 +1,277 @@
+---
+import { getUsers, getAllBlogPosts } from "../../lib/content";
+import type { User, BlogPost } from "../../lib/content";
+import PortfolioLayout from "../../layouts/PortfolioLayout.astro";
+import ProfileHeader from "../../components/ProfileHeader.astro";
+import { marked } from "marked";
+import SkillBadge from "../../components/SkillBadge.astro";
+import ExperienceCard from "../../components/ExperienceCard.astro";
+import EducationCard from "../../components/EducationCard.astro";
+import BlogPostCard from "../../components/BlogPostCard.astro";
+
+export async function getStaticPaths() {
+  const [users, allPosts] = await Promise.all([getUsers(), getAllBlogPosts()]);
+  const authorMap = Object.fromEntries(
+    users.map(u => [u.id, { name: u.name, avatar: u.avatar }])
+  );
+  return users.map(user => ({
+    params: { slug: user.id },
+    props: {
+      user,
+      blogs: allPosts
+        .filter(p => p.userId === user.id || p.coAuthors?.includes(user.id))
+        .sort((a, b) => b.date.getTime() - a.date.getTime()),
+      authorMap,
+    },
+  }));
+}
+
+interface Props {
+  user: User;
+  blogs: BlogPost[];
+  authorMap: Record<string, { name: string; avatar: string }>;
+}
+const { user, blogs, authorMap } = Astro.props;
+---
+
+<PortfolioLayout title={`${user.name} — Portfolio`} description={user.bio}>
+  <main>
+    <div class="container">
+      <nav class="breadcrumb">
+        <a href="/">← All Profiles</a>
+        <span>/ {user.name}</span>
+      </nav>
+
+      <ProfileHeader
+        name={user.name}
+        title={user.title}
+        bio={user.bio}
+        email={user.email}
+        phone={user.phone}
+        location={user.location}
+        avatar={user.avatar}
+        social={user.social}
+      />
+
+      {user.body && user.body.trim() && (
+        <section class="bio-content section">
+          <h2 class="section-title">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="18" height="18">
+              <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+              <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd" />
+            </svg>
+            About
+          </h2>
+          <div class="prose" set:html={await marked.parse(user.body)} />
+        </section>
+      )}
+
+      <div class="sections">
+        <!-- Recent Blogs -->
+        {blogs.length > 0 && (
+          <section class="section">
+            <h2 class="section-title">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="18" height="18">
+                <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
+              </svg>
+              Recent Blogs
+            </h2>
+            <div class="blogs-list">
+              {blogs.map((post) => (
+                <BlogPostCard
+                  title={post.title}
+                  date={post.date}
+                  description={post.description}
+                  tags={post.tags}
+                  href={`/users/${post.userId}/blog/${post.slug}`}
+                  authors={[post.userId, ...(post.coAuthors ?? [])].map(id => authorMap[id]).filter(Boolean)}
+                />
+              ))}
+            </div>
+          </section>
+        )}
+
+        <!-- Skills -->
+        {user.skills.length > 0 && (
+          <section class="section">
+            <h2 class="section-title">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="18" height="18">
+                <path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd"/>
+              </svg>
+              Skills
+            </h2>
+            <div class="skills-list">
+              {user.skills.map((skill) => <SkillBadge skill={skill} />)}
+            </div>
+          </section>
+        )}
+
+        <!-- Experience -->
+        {user.experience.length > 0 && (
+          <section class="section">
+            <h2 class="section-title">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="18" height="18">
+                <path fill-rule="evenodd" d="M6 6V5a3 3 0 013-3h2a3 3 0 013 3v1h2a2 2 0 012 2v3.57A22.952 22.952 0 0110 13a22.95 22.95 0 01-8-1.43V8a2 2 0 012-2h2zm2-1a1 1 0 011-1h2a1 1 0 011 1v1H8V5zm1 5a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1z" clip-rule="evenodd"/><path d="M2 13.692V16a2 2 0 002 2h12a2 2 0 002-2v-2.308A24.974 24.974 0 0110 15c-2.796 0-5.487-.46-8-1.308z"/>
+              </svg>
+              Experience
+            </h2>
+            <div class="exp-list">
+              {user.experience.map((exp) => (
+                <ExperienceCard
+                  company={exp.company}
+                  role={exp.role}
+                  duration={exp.duration}
+                  description={exp.description}
+                />
+              ))}
+            </div>
+          </section>
+        )}
+
+        <!-- Education -->
+        {user.education.length > 0 && (
+          <section class="section">
+            <h2 class="section-title">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="18" height="18">
+                <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z"/>
+              </svg>
+              Education
+            </h2>
+            <div class="edu-list">
+              {user.education.map((edu) => (
+                <EducationCard
+                  institution={edu.institution}
+                  degree={edu.degree}
+                  year={edu.year}
+                />
+              ))}
+            </div>
+          </section>
+        )}
+      </div>
+    </div>
+  </main>
+</PortfolioLayout>
+
+<style>
+  main {
+    padding-bottom: 5rem;
+  }
+
+  .container {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 2rem 0 1.5rem;
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+  }
+
+  .breadcrumb a {
+    color: var(--color-primary-light);
+    font-weight: 500;
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+
+  .breadcrumb a:hover {
+    color: var(--color-text);
+    text-decoration: none;
+  }
+
+  .breadcrumb span {
+    color: var(--color-text-subtle);
+  }
+
+  .sections {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+  }
+
+  .section {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: 1.75rem;
+  }
+
+  .section-title {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-text);
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.875rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .section-title svg {
+    color: var(--color-primary);
+  }
+
+  .skills-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .exp-list {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .edu-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  /* Markdown Content Styling */
+  .prose {
+    font-family: var(--font-serif);
+    font-size: 1.125rem;
+    line-height: 1.6;
+    color: var(--color-text);
+  }
+
+  .prose :global(h1), .prose :global(h2), .prose :global(h3) {
+    color: var(--color-text);
+    margin: 1.5rem 0 1rem;
+    font-family: var(--font-serif);
+  }
+
+  .prose :global(h1) { font-size: 1.75rem; }
+  .prose :global(h2) { font-size: 1.5rem; }
+  .prose :global(h3) { font-size: 1.25rem; }
+
+  .prose :global(p) {
+    margin-bottom: 1.25rem;
+  }
+
+  .prose :global(ul), .prose :global(ol) {
+    margin-bottom: 1.25rem;
+    padding-left: 1.5rem;
+  }
+
+  .prose :global(li) {
+    margin-bottom: 0.5rem;
+  }
+
+  .prose :global(a) {
+    color: var(--color-primary-light);
+    text-decoration: underline;
+  }
+
+  .prose :global(a:hover) {
+    color: var(--color-text);
+  }
+</style>

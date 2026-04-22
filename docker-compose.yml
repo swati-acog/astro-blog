@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  astro-aganitha:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:4321"
+    restart: always
+    container_name: astro-aganitha-app
+    environment:
+      - HOST=0.0.0.0
+      - PORT=4321

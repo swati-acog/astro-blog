@@ -1,0 +1,106 @@
+---
+import PortfolioLayout from "../layouts/PortfolioLayout.astro";
+---
+
+<PortfolioLayout
+  title="Search"
+  description="Search through all employee profiles and blog posts"
+>
+  <main class="search-page">
+    <div class="container">
+      <header class="page-header">
+        <h1>Search</h1>
+        <p>Find profiles, blog posts, and research updates.</p>
+      </header>
+
+      <div id="search"></div>
+    </div>
+  </main>
+</PortfolioLayout>
+
+<link href="/pagefind/pagefind-ui.css" rel="stylesheet" />
+<script src="/pagefind/pagefind-ui.js" is:inline></script>
+<script>
+  window.addEventListener("DOMContentLoaded", () => {
+    // @ts-ignore
+    new PagefindUI({
+      element: "#search",
+      showImages: false,
+      resetStyles: false,
+    });
+
+    // Restore query from URL
+    const q = new URLSearchParams(location.search).get("q");
+    if (q) {
+      const input = document.querySelector(
+        ".pagefind-ui__search-input",
+      ) as HTMLInputElement | null;
+      if (input) {
+        input.value = q;
+        input.dispatchEvent(new Event("input"));
+      }
+    }
+
+    // Sync query to URL
+    document.addEventListener("input", (e) => {
+      const target = e.target as HTMLElement;
+      if (target?.classList.contains("pagefind-ui__search-input")) {
+        const url = new URL(location.href);
+        const val = (target as HTMLInputElement).value;
+        if (val) url.searchParams.set("q", val);
+        else url.searchParams.delete("q");
+        history.replaceState(null, "", url);
+      }
+    });
+  });
+</script>
+
+<style>
+  .search-page {
+    padding: 4rem 0 6rem;
+  }
+  .container {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+  .page-header {
+    margin-bottom: 2.5rem;
+  }
+  .page-header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+  }
+  .page-header p {
+    font-family: var(--font-serif);
+    font-size: 1.125rem;
+    color: var(--color-text-muted);
+  }
+
+  /* Pagefind UI overrides */
+  :global(#search) {
+    --pagefind-ui-scale: 1;
+  }
+  :global(.pagefind-ui__search-input) {
+    font-family: var(--font-serif);
+    font-size: 1.125rem;
+    border: none;
+    border-bottom: 2px solid var(--color-border);
+    border-radius: 0;
+    padding: 0.75rem 0;
+    background: transparent;
+    color: var(--color-text);
+    box-shadow: none;
+  }
+  :global(.pagefind-ui__search-input:focus) {
+    border-bottom-color: var(--color-accent);
+    outline: none;
+  }
+  :global(.pagefind-ui__result-link) {
+    color: var(--color-accent);
+  }
+  :global(.pagefind-ui__result-excerpt) {
+    color: var(--color-text-muted);
+    font-size: 0.875rem;
+  }
+</style>

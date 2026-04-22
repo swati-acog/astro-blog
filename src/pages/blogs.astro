@@ -1,0 +1,74 @@
+---
+import { getAllBlogPosts, getUsers } from "../lib/content";
+import PortfolioLayout from "../layouts/PortfolioLayout.astro";
+import BlogPostCard from "../components/BlogPostCard.astro";
+
+const allPosts = await getAllBlogPosts();
+const allUsers = await getUsers();
+
+const authorMap = Object.fromEntries(
+  allUsers.map(user => [user.id, { name: user.name, avatar: user.avatar }])
+);
+---
+
+<PortfolioLayout title="Team Blogs" description="The latest insights and updates from our entire team.">
+  <main class="blogs-page">
+    <div class="container">
+      <header class="page-header">
+        <h1>Team Blogs</h1>
+        <p>A unified feed of stories, research, and updates from across the organization.</p>
+      </header>
+
+      <div class="posts-list">
+        {allPosts.map((post) => {
+          const authors = [post.userId, ...(post.coAuthors ?? [])]
+            .map(id => authorMap[id])
+            .filter(Boolean);
+          return (
+            <BlogPostCard
+              title={post.title}
+              date={post.date}
+              description={post.description}
+              tags={post.tags}
+              href={`/users/${post.userId}/blog/${post.slug}`}
+              authors={authors}
+            />
+          );
+        })}
+      </div>
+    </div>
+  </main>
+</PortfolioLayout>
+
+<style>
+  .blogs-page {
+    padding: 4rem 0 6rem;
+  }
+
+  .container {
+    max-width: 740px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  .page-header {
+    margin-bottom: 3.5rem;
+  }
+
+  h1 {
+    font-size: 3rem;
+    margin-bottom: 0.75rem;
+  }
+
+  p {
+    font-family: var(--font-serif);
+    font-size: 1.125rem;
+    color: var(--color-text-muted);
+    line-height: 1.5;
+  }
+
+  .posts-list {
+    display: flex;
+    flex-direction: column;
+  }
+</style>

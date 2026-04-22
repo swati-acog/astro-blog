@@ -1,0 +1,70 @@
+---
+interface Props {
+  company: string;
+  role: string;
+  duration: string;
+  description: string;
+}
+const { company, role, duration, description } = Astro.props;
+---
+
+<div class="exp-card">
+  <div class="content">
+    <div class="header">
+      <div>
+        <h3 class="role">{role}</h3>
+        <p class="company">{company}</p>
+      </div>
+      <span class="duration">{duration}</span>
+    </div>
+    <p class="desc">{description}</p>
+  </div>
+</div>
+
+<style>
+  .exp-card {
+    margin-bottom: 2.5rem;
+  }
+
+  .content {
+    flex: 1;
+  }
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .role {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--color-text);
+    margin-bottom: 0.25rem;
+    font-family: var(--font-serif);
+  }
+
+  .company {
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+    font-weight: 500;
+    font-family: var(--font-sans);
+  }
+
+  .duration {
+    font-size: 0.875rem;
+    color: var(--color-text-subtle);
+    white-space: nowrap;
+    font-family: var(--font-sans);
+  }
+
+  .desc {
+    font-size: 1rem;
+    color: var(--color-text);
+    line-height: 1.6;
+    font-family: var(--font-serif);
+  }
+</style>

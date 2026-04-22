@@ -1,0 +1,50 @@
+---
+interface Props {
+  institution: string;
+  degree: string;
+  year: string;
+}
+const { institution, degree, year } = Astro.props;
+---
+
+<div class="edu-card">
+  <div class="info">
+    <h3 class="degree">{degree}</h3>
+    <p class="institution">{institution}</p>
+  </div>
+  <span class="year">{year}</span>
+</div>
+
+<style>
+  .edu-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .info {
+    flex: 1;
+  }
+
+  .degree {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--color-text);
+    margin-bottom: 0.25rem;
+    font-family: var(--font-serif);
+  }
+
+  .institution {
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+    font-family: var(--font-sans);
+  }
+
+  .year {
+    font-size: 0.875rem;
+    color: var(--color-text-subtle);
+    font-family: var(--font-sans);
+  }
+</style>

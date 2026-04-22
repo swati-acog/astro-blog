@@ -1,0 +1,180 @@
+---
+interface Props {
+  title: string;
+  description?: string;
+}
+const { title, description = "Developer Portfolio" } = Astro.props;
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="description" content={description} />
+    <title>{title}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="site-header-inner">
+        <div class="brand-wrap">
+          <a href="/" class="brand">Aganitha</a>
+          <nav class="header-nav">
+            <a href="/blogs" class="nav-link">Blogs</a>
+          </nav>
+        </div>
+        <div class="header-actions">
+          <a href="/search" class="search-toggle" aria-label="Search">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="20" height="20">
+              <path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z" clip-rule="evenodd" />
+            </svg>
+          </a>
+        </div>
+      </div>
+    </header>
+    <main class="page-content">
+      <slot />
+    </main>
+  </body>
+</html>
+
+<style is:global>
+  *, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  :root {
+    --color-bg: #ffffff;
+    --color-surface: #fcfcfc;
+    --color-surface-raised: #ffffff;
+    --color-border: #e6e6e6;
+    --color-primary: #1a1a1a;
+    --color-primary-light: #757575;
+    --color-accent: #1a8917; /* Medium green for subtle accents */
+    --color-text: #292929;
+    --color-text-muted: #757575;
+    --color-text-subtle: #999999;
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.05);
+    --shadow-lg: 0 12px 24px rgba(0, 0, 0, 0.1);
+    --font-sans: "Inter", system-ui, sans-serif;
+    --font-serif: "Lora", Georgia, serif;
+  }
+
+  html {
+    font-family: var(--font-sans);
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
+    min-height: 100vh;
+    padding-top: 60px; /* Space for the fixed header */
+  }
+
+  /* ── Site Header ── */
+  .site-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--color-border);
+    z-index: 1000;
+  }
+
+  .site-header-inner {
+    max-width: 1000px;
+    height: 100%;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .brand-wrap {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .header-nav {
+    display: flex;
+    gap: 1.5rem;
+    margin-left: 0.5rem;
+    border-left: 1px solid var(--color-border);
+    padding-left: 1.5rem;
+  }
+
+  .nav-link {
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--color-text-muted);
+    transition: color 0.2s;
+  }
+
+  .nav-link:hover {
+    color: var(--color-accent);
+  }
+
+  .brand {
+    font-family: var(--font-serif);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-primary) !important;
+    letter-spacing: -0.03em;
+  }
+
+  .search-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text-muted);
+    transition: color 0.2s;
+  }
+
+  .search-toggle:hover {
+    color: var(--color-primary);
+  }
+
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  a {
+    color: var(--color-primary);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  a:hover {
+    color: var(--color-accent);
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-serif);
+    line-height: 1.25;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--color-primary);
+  }
+</style>
