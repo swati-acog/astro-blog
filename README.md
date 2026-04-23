@@ -44,9 +44,12 @@ Create a `resume.md` file in your directory with the following frontmatter:
 
 ```markdown
 ---
-name: "Your Name"
+# required fields
+name: "Your Name" 
+avatar: "https://url-to-your-image.jpg" # or path relative to /public 
+
+# optional fields
 title: "Your Professional Title"
-avatar: "https://url-to-your-image.jpg" # or path relative to /public
 bio: "A short bio about yourself."
 email: "your@email.com"
 location:
@@ -75,8 +78,11 @@ Create a `blog/` folder inside your user directory. Add markdown files (e.g., `m
 
 ```markdown
 ---
+# required fields
 title: "My First Blog Post"
-date: "2024-04-23"
+date: "2024-04-23" # format: (YYYY-MM-DD)
+
+# optional fields
 description: "A brief summary of what this post is about."
 tags: ["tech", "astro"]
 # coAuthors: ["another-user-slug"] # Optional
