@@ -30,4 +30,3 @@ Thumbs.db
 # Pagefind indexing
 dist/pagefind/
 bun.lock
-public/
