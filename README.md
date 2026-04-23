@@ -1,43 +1,112 @@
-# Astro Starter Kit: Minimal
+# Astro Aganitha: Multi-User Portfolio & Blog
 
+A professional, decentralized multi-user portfolio and blog platform built with [Astro](https://astro.build/) and [Bun](https://bun.sh/). This platform allows organizations or groups to host individual member portfolios and a collective blog feed in a single static site.
+
+## 🚀 Key Features
+
+- **Decentralized Content**: Each user manages their own data in dedicated directories.
+- **Dynamic Portfolios**: Automatically generated resumes and project pages for every user.
+- **Global Blog Feed**: A centralized view aggregating posts from all members.
+- **Integrated Search**: Fast, full-text search across all profiles and blogs using [Pagefind](https://pagefind.app/).
+- **Static First**: High performance and easy deployment with Static Site Generation (SSG).
+
+## 🛠️ Getting Started
+
+### Prerequisites
+- [Bun](https://bun.sh/) installed on your machine.
+
+### Installation
 ```sh
-bun create astro@latest -- --template minimal
+bun install
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+### Development
+```sh
+bun dev
+```
+Starts the local development server at `http://localhost:4321`.
 
-## 🚀 Project Structure
+### Build
+```sh
+bun run build
+```
+Builds the static site to the `dist/` directory.
 
-Inside of your Astro project, you'll see the following folders and files:
+## 🧑‍💻 How to Add Your Content
+
+This platform uses a file-based content management system. To add yourself to the site:
+
+### 1. Create your user directory
+Create a new folder in `src/content/users/` named after your unique slug (e.g., `src/content/users/your-name/`).
+
+### 2. Add your Resume/Profile
+Create a `resume.md` file in your directory with the following frontmatter:
+
+```markdown
+---
+name: "Your Name"
+title: "Your Professional Title"
+avatar: "https://url-to-your-image.jpg" # or path relative to /public
+bio: "A short bio about yourself."
+email: "your@email.com"
+location:
+  city: "City"
+  country: "Country"
+skills: ["Skill 1", "Skill 2"]
+experience:
+  - company: "Company Name"
+    role: "Your Role"
+    duration: "2020 - Present"
+    description: "Key responsibilities and achievements."
+education:
+  - institution: "University Name"
+    degree: "Degree Name"
+    year: "2020"
+social:
+  github: "yourusername"
+  linkedin: "yourusername"
+---
+
+Your long-form bio or additional details go here.
+```
+
+### 3. Add Blog Posts
+Create a `blog/` folder inside your user directory. Add markdown files (e.g., `my-first-post.md`) with the following frontmatter:
+
+```markdown
+---
+title: "My First Blog Post"
+date: "2024-04-23"
+description: "A brief summary of what this post is about."
+tags: ["tech", "astro"]
+# coAuthors: ["another-user-slug"] # Optional
+---
+
+Your blog content goes here...
+```
+
+## 📂 Project Structure
 
 ```text
 /
-├── public/
+├── public/          # Static assets
 ├── src/
-│   └── pages/
-│       └── index.astro
+│   ├── components/  # Shared components (ProfileHeader, BlogPostCard, etc.)
+│   ├── content/
+│   │   └── users/   # User-specific data (The core "database")
+│   ├── layouts/     # Page templates
+│   ├── lib/         # Content loading logic (src/lib/content.ts)
+│   └── pages/       # Routing (Home, Blogs, Search, User Profiles)
+├── astro.config.mjs
 └── package.json
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
-
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
-
-Any static assets, like images, can be placed in the `public/` directory.
-
 ## 🧞 Commands
 
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `bun install`             | Installs dependencies                            |
-| `bun dev`             | Starts local dev server at `localhost:4321`      |
-| `bun build`           | Build your production site to `./dist/`          |
-| `bun preview`         | Preview your build locally, before deploying     |
-| `bun astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `bun astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+| Command             | Action                                           |
+| :------------------ | :----------------------------------------------- |
+| `bun install`       | Installs dependencies                            |
+| `bun dev`           | Starts local dev server at `localhost:4321`      |
+| `bun run build`     | Build your production site to `./dist/`          |
+| `bun run preview`   | Preview your build locally                       |
+| `bun astro ...`     | Run Astro-specific CLI commands                  |
