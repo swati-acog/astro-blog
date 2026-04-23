@@ -3,7 +3,6 @@ title: "Sun, Sand, and Code: My Unforgettable Summer Vacation"
 date: "2026-04-20"
 description: "Reflecting on a perfect balance of travel, relaxation, and a bit of side-project hacking during the summer break."
 tags: ["Travel", "Summer", "Photography", "Lifestyle"]
-coAuthors : [swati]
 ---
 
 Summer 2026 has been one for the books. I decided to swap my dual-monitor setup for the pristine beaches of the Mediterranean, and it was the best decision I've made all year.
