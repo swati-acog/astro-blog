@@ -1,0 +1,16 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runner
+    image: ghcr.io/swati-acog/astro-blog:latest
+    container_name: astro-blog
+    restart: unless-stopped
+    labels:
+      - "user=${USER}"
+      - "description=blogging application built on astro"
+      - "security=none"
+      - "port=4321:4321"
+    environment:
+      - NODE_ENV=production
