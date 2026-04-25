@@ -1,5 +1,5 @@
 ---
-name: harleen 
+name: harleen kaur
 avatar: https://picsum.photos/200/300?grayscale
 title: full stack developer
 

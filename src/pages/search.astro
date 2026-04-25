@@ -6,6 +6,7 @@ import PortfolioLayout from "../layouts/PortfolioLayout.astro";
   title="Search"
   description="Search through all employee profiles and blog posts"
 >
+  <link slot="head" href="/pagefind/pagefind-ui.css" rel="stylesheet" />
   <main class="search-page">
     <div class="container">
       <header class="page-header">
@@ -18,7 +19,6 @@ import PortfolioLayout from "../layouts/PortfolioLayout.astro";
   </main>
 </PortfolioLayout>
 
-<link href="/pagefind/pagefind-ui.css" rel="stylesheet" />
 <script src="/pagefind/pagefind-ui.js" is:inline></script>
 <script>
   window.addEventListener("DOMContentLoaded", () => {

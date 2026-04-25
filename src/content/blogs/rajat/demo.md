@@ -2,6 +2,7 @@
 title: testing testing
 date: 2026-01-09
 description: writing blog is my favourite thing to do
+coAuthors: [harleen, sonia]
 ---
 
 ### we are testing
