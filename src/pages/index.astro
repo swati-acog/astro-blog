@@ -1,22 +1,63 @@
 ---
-import { getUsers } from "../lib/content";
+import { getUsers, getAllBlogPosts } from "../lib/content";
 import PortfolioLayout from "../layouts/PortfolioLayout.astro";
 import UserCard from "../components/UserCard.astro";
+import BlogPostCard from "../components/BlogPostCard.astro";
 
 const users = await getUsers();
+const allPosts = await getAllBlogPosts();
+const recentPosts = allPosts.slice(0, 3);
+
+const authorMap = Object.fromEntries(
+  users.map(u => [u.id, { name: u.name, avatar: u.avatar }])
+);
 ---
 
-<PortfolioLayout title="The Open Page">
-  <main>
-    <header class="page-header">
-      <div class="header-inner">
-        <h1>Curiosity & Clarity</h1>
-        <p>Thoughts, stories, and ideas.</p>
+<PortfolioLayout title="Aganitha — Where Science Meets Software">
+
+  <!-- ── Hero (full-bleed) ── -->
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="hero-badge">Our People &amp; Ideas</div>
+      <h1 class="hero-title">Where <em>Science</em> Meets<br />Software</h1>
+      <p class="hero-sub">
+        A living record of the researchers, engineers, and thinkers
+        building the future of computational biology at Aganitha.
+      </p>
+      <div class="hero-actions">
+        <a href="/blogs" class="btn-primary">Read the blog</a>
+        <a href="/search" class="btn-ghost">Search the team</a>
       </div>
-    </header>
-    <section class="grid-section">
+    </div>
+    <div class="hero-stats">
+      <div class="stat-item">
+        <div class="stat-num">{users.length}</div>
+        <div class="stat-label">Team members</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">{allPosts.length}</div>
+        <div class="stat-label">Blog posts</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">{new Set(allPosts.flatMap(p => p.tags ?? [])).size}</div>
+        <div class="stat-label">Topics covered</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="page-body">
+
+    <!-- ── Team ── -->
+    <section class="section">
+      <div class="section-header">
+        <div>
+          <div class="section-label">The people</div>
+          <h2 class="section-title">Meet the <em>team</em></h2>
+        </div>
+        <p class="section-sub">The researchers and engineers behind the work.</p>
+      </div>
       <div class="users-grid">
-        {users.map((user) => (
+        {users.map(user => (
           <UserCard
             id={user.id}
             name={user.name}
@@ -27,57 +68,325 @@ const users = await getUsers();
         ))}
       </div>
     </section>
-  </main>
+
+    <!-- ── Recent posts ── -->
+    {recentPosts.length > 0 && (
+      <section class="section section-alt">
+        <div class="section-header">
+          <div>
+            <div class="section-label">Knowledge hub</div>
+            <h2 class="section-title">Ideas worth <em>sharing</em></h2>
+          </div>
+          <a href="/blogs" class="section-link">View all →</a>
+        </div>
+        <div class="posts-list">
+          {recentPosts.map(post => {
+            const authors = [post.userId, ...(post.coAuthors ?? [])]
+              .map(id => authorMap[id])
+              .filter(Boolean);
+            return (
+              <BlogPostCard
+                title={post.title}
+                date={post.date}
+                description={post.description}
+                tags={post.tags}
+                href={`/users/${post.userId}/blog/${post.slug}`}
+                authors={authors}
+              />
+            );
+          })}
+        </div>
+      </section>
+    )}
+
+  </div>
+
 </PortfolioLayout>
 
 <style>
-  main {
-    max-width: 1000px;
-    margin: 0 auto;
-    padding: 0 1.5rem 4rem;
+  /* ── Hero (full-bleed) ── */
+  .hero {
+    min-height: calc(100vh - 60px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 80px 2rem 60px;
+    position: relative;
+    overflow: hidden;
+    background-image: url(/landing-page.jpg);
+    background-size: cover;
+    background-position: center;
+    /* break out of any ancestor max-width */
+    width: 100vw;
+    margin-left: calc(-50vw + 50%);
   }
 
-  .page-header {
-    padding: 6rem 0 3rem;
-    border-bottom: 1px solid var(--color-border);
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      160deg,
+      rgba(15, 5, 40, 0.82) 0%,
+      rgba(60, 20, 100, 0.68) 50%,
+      rgba(10, 10, 30, 0.84) 100%
+    );
+  }
+
+  .hero-inner {
+    position: relative;
+    max-width: 760px;
     margin-bottom: 3.5rem;
   }
 
-  .header-inner {
-    max-width: 600px;
+  /* ── Kicker badge ── */
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(196, 181, 253, 0.14);
+    border: 1px solid rgba(196, 181, 253, 0.35);
+    border-radius: 20px;
+    padding: 5px 16px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #C4B5FD;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    margin-bottom: 1.75rem;
+    backdrop-filter: blur(4px);
+    font-family: var(--font-sans);
   }
 
-  h1 {
-    font-size: 3rem;
-    font-weight: 700;
-    color: var(--color-text);
-    margin-bottom: 1rem;
-    letter-spacing: -0.02em;
+  .hero-badge::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #A78BFA;
+    animation: pulse 2s infinite;
+    flex-shrink: 0;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%       { opacity: 0.4; transform: scale(1.4); }
+  }
+
+  /* ── Hero heading ── */
+  .hero-title {
     font-family: var(--font-serif);
+    font-size: clamp(2.6rem, 7vw, 4.75rem);
+    font-weight: 400;
+    line-height: 1.08;
+    letter-spacing: -0.04em;
+    color: #fff;
+    margin-bottom: 1.25rem;
+    text-shadow: 0 2px 16px rgba(0, 0, 0, 0.3);
   }
 
-  p {
-    font-size: 1.25rem;
-    color: var(--color-text-muted);
+  .hero-title em {
+    font-style: italic;
+    color: #C4B5FD;
+  }
+
+  .hero-sub {
+    font-family: var(--font-sans);
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.6);
+    max-width: 500px;
+    line-height: 1.75;
+    margin: 0 auto 2.5rem;
+  }
+
+  /* ── Hero CTAs ── */
+  .hero-actions {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary {
+    display: inline-block;
+    background: var(--color-accent);
+    color: #fff;
+    border: none;
+    padding: 0.8rem 1.75rem;
+    border-radius: var(--radius-md);
+    font-family: var(--font-sans);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.15s;
+    box-shadow: 0 4px 14px rgba(124, 58, 237, 0.45);
+  }
+
+  .btn-primary:hover {
+    background: var(--color-accent-mid);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(124, 58, 237, 0.55);
+    color: #fff;
+  }
+
+  .btn-ghost {
+    display: inline-block;
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    padding: 0.8rem 1.75rem;
+    border-radius: var(--radius-md);
+    font-family: var(--font-sans);
+    font-size: 0.9375rem;
+    text-decoration: none;
+    transition: all 0.15s;
+    backdrop-filter: blur(4px);
+  }
+
+  .btn-ghost:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.55);
+    color: #fff;
+  }
+
+  /* ── Frosted stats bar ── */
+  .hero-stats {
+    position: relative;
+    display: flex;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.07);
+    backdrop-filter: blur(8px);
+  }
+
+  .stat-item {
+    flex: 1;
+    padding: 1.3rem 2rem;
+    border-right: 1px solid rgba(255, 255, 255, 0.08);
+    text-align: center;
+  }
+
+  .stat-item:last-child {
+    border-right: none;
+  }
+
+  .stat-num {
+    display: block;
     font-family: var(--font-serif);
-    line-height: 1.4;
+    font-size: 2rem;
+    font-weight: 400;
+    color: #fff;
+    letter-spacing: -0.05em;
+    line-height: 1;
   }
 
-  .users-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  .stat-label {
+    display: block;
+    font-size: 0.72rem;
+    color: rgba(255, 255, 255, 0.45);
+    margin-top: 0.25rem;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    font-family: var(--font-sans);
+  }
+
+  /* ── Page body (constrained) ── */
+  .page-body {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 1.5rem 6rem;
+  }
+
+  /* ── Sections ── */
+  .section {
+    margin-top: 5rem;
+  }
+
+  .section-alt {
+    padding-top: 4rem;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .section-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 2rem;
     gap: 1.5rem;
   }
 
+  .section-label {
+    font-size: 0.7rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-accent);
+    margin-bottom: 0.5rem;
+    font-family: var(--font-sans);
+  }
+
+  .section-title {
+    font-family: var(--font-serif);
+    font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+    font-weight: 400;
+    line-height: 1.15;
+    letter-spacing: -0.03em;
+    color: var(--color-text);
+  }
+
+  .section-title em {
+    font-style: italic;
+    color: var(--color-accent);
+  }
+
+  .section-sub {
+    font-family: var(--font-sans);
+    font-size: 0.9375rem;
+    color: var(--color-text-muted);
+    max-width: 340px;
+    text-align: right;
+    line-height: 1.6;
+    padding-bottom: 0.15rem;
+  }
+
+  .section-link {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--color-accent);
+    text-decoration: none;
+    white-space: nowrap;
+    flex-shrink: 0;
+    padding-bottom: 0.15rem;
+    font-family: var(--font-sans);
+  }
+
+  .section-link:hover {
+    text-decoration: underline;
+  }
+
+  /* ── Grid ── */
+  .users-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.25rem;
+  }
+
+  .posts-list {
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── Responsive ── */
   @media (max-width: 640px) {
-    .page-header {
-      padding: 4rem 0 2rem;
-      text-align: center;
-    }
-    .header-inner {
-      margin: 0 auto;
-    }
-    h1 { font-size: 2.25rem; }
-    p { font-size: 1.125rem; }
+    .hero { padding: 3.5rem 1.5rem 3rem; }
+    .hero-stats { flex-direction: column; gap: 0; }
+    .stat-item { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.08); }
+    .stat-item:last-child { border-bottom: none; }
+    .section-header { flex-direction: column; align-items: flex-start; }
+    .section-sub { text-align: left; }
   }
 </style>
+
