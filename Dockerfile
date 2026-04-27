@@ -4,8 +4,8 @@ FROM oven/bun:1-alpine AS base
 # ─── Stage 2: Deps ───────────────────────────────────────────────────────────
 FROM base AS deps
 WORKDIR /app
-COPY package.json ./
-RUN bun install
+COPY package.json bun.lock ./
+RUN bun install --frozen-lockfile
 
 # ─── Stage 3: Build ──────────────────────────────────────────────────────────
 FROM base AS builder
@@ -28,7 +28,7 @@ RUN bun add serve && chown -R astro:bunjs /app
 # Copy only the built static assets
 COPY --from=builder --chown=astro:bunjs /app/dist ./dist
 
-# USER astro
+USER astro
 
 EXPOSE 4321
 
