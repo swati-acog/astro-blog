@@ -14,13 +14,13 @@ const authorMap = Object.fromEntries(
 <PortfolioLayout title="Team Blogs" description="The latest insights and updates from our entire team.">
   <main class="blogs-page">
     <div class="container">
-      <header class="page-header">
-        <h1>Team Blogs</h1>
-        <p>A unified feed of stories, research, and updates from across the organization.</p>
+      <header class="feed-hero">
+        <h1>Where great ideas find their <em>voice</em></h1>
+        <p>Insights, reflections, and deep-dives from across the organisation.</p>
       </header>
 
-      <div class="posts-list">
-        {allPosts.map((post) => {
+      <div class="blogs-grid">
+        {allPosts.map((post, i) => {
           const authors = [post.userId, ...(post.coAuthors ?? [])]
             .map(id => authorMap[id])
             .filter(Boolean);
@@ -32,6 +32,7 @@ const authorMap = Object.fromEntries(
               tags={post.tags}
               href={`/users/${post.userId}/blog/${post.slug}`}
               authors={authors}
+              colorIndex={i}
             />
           );
         })}
@@ -42,33 +43,50 @@ const authorMap = Object.fromEntries(
 
 <style>
   .blogs-page {
-    padding: 4rem 0 6rem;
+    padding: 0 0 6rem;
   }
 
   .container {
-    max-width: 740px;
+    max-width: 1100px;
     margin: 0 auto;
     padding: 0 1.5rem;
   }
 
-  .page-header {
-    margin-bottom: 3.5rem;
+  .feed-hero {
+    padding: 52px 0 20px;
   }
 
-  h1 {
-    font-size: 3rem;
+  .feed-hero h1 {
+    font-family: var(--font-serif);
+    font-size: 2.75rem;
+    font-weight: 400;
+    line-height: 1.18;
+    letter-spacing: -0.5px;
     margin-bottom: 0.75rem;
   }
 
-  p {
-    font-family: var(--font-serif);
-    font-size: 1.125rem;
-    color: var(--color-text-muted);
-    line-height: 1.5;
+  .feed-hero h1 em {
+    font-style: italic;
+    color: var(--color-accent);
   }
 
-  .posts-list {
-    display: flex;
-    flex-direction: column;
+  .feed-hero p {
+    color: var(--color-text-muted);
+    font-size: 1rem;
+    max-width: 480px;
+    font-family: var(--font-sans);
+    line-height: 1.6;
+  }
+
+  .blogs-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+  }
+
+  @media (max-width: 640px) {
+    .blogs-grid {
+      grid-template-columns: 1fr;
+    }
   }
 </style>

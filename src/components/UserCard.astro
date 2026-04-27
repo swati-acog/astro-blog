@@ -73,26 +73,31 @@ const { id, name, title, avatar, location } = Astro.props;
   }
 
   .name {
-    font-size: 1rem;
+    font-family: var(--font-serif);
+    font-size: 1.1875rem;
     font-weight: 600;
-    color: var(--color-text);
-    margin-bottom: 0.15rem;
+    color: #292929;
+    margin-bottom: 0.2rem;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    letter-spacing: -0.01em;
   }
 
   .title {
-    font-size: 0.825rem;
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 0.9375rem;
     color: var(--color-primary-light);
-    margin-bottom: 0.3rem;
+    margin-bottom: 0.35rem;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    font-weight: 400;
   }
 
   .location {
-    font-size: 0.775rem;
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 0.875rem;
     color: var(--color-text-muted);
     display: flex;
     align-items: center;

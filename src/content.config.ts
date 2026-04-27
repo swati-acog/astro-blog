@@ -36,7 +36,7 @@ const users = defineCollection({
     title: z.string().optional(),
     bio: z.string().optional(),
     email: z.string().email().optional(),
-    phone: z.string().optional(),
+    phone: z.number().optional(),
     location: LocationSchema.optional(),
     skills: z.array(z.string()).default([]),
     experience: z.array(ExperienceSchema).default([]),

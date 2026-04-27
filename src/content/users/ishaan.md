@@ -3,6 +3,7 @@ name: Ishaan Malhotra
 avatar: /avatars/ishaan.png
 title: Senior Backend Engineer
 bio: Specializing in high-performance distributed systems and cloud architecture.
+phone: 7777777777
 email: ishaan@aganitha.ai
 location:
   city: Bangalore

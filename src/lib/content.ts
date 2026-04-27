@@ -32,7 +32,7 @@ export interface User {
   title?: string;
   bio?: string;
   email?: string;
-  phone?: string;
+  phone?: number;
   location?: Location;
   skills: string[];
   experience: Experience[];
