@@ -5,7 +5,7 @@ services:
       dockerfile: Dockerfile
       target: runner
     image: ghcr.io/swati-acog/astro-blog:latest
-    container_name: astro-blog
+    container_name: astro-blogs
     restart: unless-stopped
     labels:
       - "user=${USER}"
