@@ -38,10 +38,6 @@ const authorMap = Object.fromEntries(
         <div class="stat-num">{allPosts.length}</div>
         <div class="stat-label">Blog posts</div>
       </div>
-      <div class="stat-item">
-        <div class="stat-num">{new Set(allPosts.flatMap(p => p.tags ?? [])).size}</div>
-        <div class="stat-label">Topics covered</div>
-      </div>
     </div>
   </section>
 
