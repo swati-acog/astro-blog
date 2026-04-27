@@ -80,7 +80,7 @@ jobs:
             # Pull latest image and restart the container
             cd ~/astro-blog
             docker compose pull
-            docker compose up -d
+            docker compose up -d --pull always --force-recreate
 
             # Clean up old dangling images
             docker image prune -f
