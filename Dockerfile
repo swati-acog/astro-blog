@@ -2,10 +2,11 @@
 FROM oven/bun:1-alpine AS base
 
 # ─── Stage 2: Deps ───────────────────────────────────────────────────────────
+# ─── Stage 2: Deps ─────────────────────────────────────────────────────────
 FROM base AS deps
 WORKDIR /app
-COPY package.json bun.lockb ./
-RUN bun install --frozen-lockfile
+COPY package.json ./
+RUN bun install
 
 # ─── Stage 3: Build ──────────────────────────────────────────────────────────
 FROM base AS builder
