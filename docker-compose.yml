@@ -7,10 +7,10 @@ services:
     image: ghcr.io/swati-acog/astro-blog:latest
     container_name: astro-blogs
     restart: unless-stopped
+    ports:
+      - "4321:4321"
     labels:
       - "user=${USER}"
       - "description=blogging application built on astro"
-      - "security=none"
-      - "port=4321:4321"
     environment:
       - NODE_ENV=production
